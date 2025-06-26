@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>理論基盤: U理論の圏論的分析 - U理論×免疫マップ統合理論</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* 新しいナビゲーションヘッダー */
+        .main-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 2000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4a5568;
+        }
+
+        /* Part間ナビゲーション */
+        .part-nav {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .part-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: 2px solid transparent;
+            font-size: 0.9rem;
+        }
+
+        .part-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .part-btn.active {
+            background: #4a5568;
+            border-color: #667eea;
+        }
+
+        /* ステータスインジケーター */
+        .status-indicator {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            font-size: 0.8rem;
+            z-index: 1999;
+        }
+
+        .progress-bar {
+            width: 100px;
+            height: 4px;
+            background: rgba(102, 126, 234, 0.2);
+            border-radius: 2px;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #667eea;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        /* 既存のプレゼンテーションスタイル */
+        .presentation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .slide {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 700px;
+            display: flex;
+            flex-direction: column;
+            page-break-after: always;
+        }
+        
+        .slide-header {
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .slide-title {
+            font-size: 2.2em;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .slide-subtitle {
+            font-size: 1.3em;
+            color: #7f8c8d;
+            font-weight: normal;
+        }
+        
+        .slide-content {
+            flex: 1;
+            font-size: 1.2em;
+            line-height: 1.8;
+        }
+        
+        .slide-number {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 1em;
+            font-weight: bold;
+        }
+        
+        /* Title slide specific */
+        .title-slide {
+            text-align: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .main-title {
+            font-size: 3.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .main-subtitle {
+            font-size: 1.8em;
+            margin-bottom: 50px;
+            opacity: 0.9;
+        }
+        
+        .author-info {
+            font-size: 1.3em;
+            margin-top: 60px;
+            opacity: 0.8;
+        }
+        
+        /* U-curve diagram */
+        .u-diagram {
+            position: relative;
+            height: 450px;
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+        
+        .phase-box {
+            position: absolute;
+            background: white;
+            border: 3px solid;
+            border-radius: 12px;
+            padding: 12px;
+            min-width: 130px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-size: 1em;
+        }
+        
+        .phase-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+        
+        .phase-desc {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 3px;
+        }
+        
+        .math-desc {
+            font-size: 0.8em;
+            font-style: italic;
+            color: #888;
+        }
+        
+        /* Phase positions and colors */
+        .downloading { top: 50px; left: 50px; border-color: #e74c3c; background: #ffe8e8; }
+        .seeing { top: 120px; left: 200px; border-color: #f39c12; background: #fff4e6; }
+        .sensing { top: 220px; left: 350px; border-color: #f1c40f; background: #fffff0; }
+        .presencing { 
+            top: 320px; left: 500px; border-color: #27ae60; background: #e8f5e8; 
+            border-width: 5px; font-weight: bold; min-width: 150px;
+        }
+        .crystallizing { top: 220px; left: 650px; border-color: #3498db; background: #e6f3ff; }
+        .prototyping { top: 120px; left: 800px; border-color: #9b59b6; background: #f3e6ff; }
+        .performing { top: 50px; left: 950px; border-color: #8e44ad; background: #f0e6ff; }
+        
+        /* Arrows */
+        .arrow {
+            position: absolute;
+            font-size: 28px;
+            color: #34495e;
+            font-weight: bold;
+        }
+        
+        .arrow1 { top: 90px; left: 170px; transform: rotate(20deg); }
+        .arrow2 { top: 180px; left: 320px; transform: rotate(40deg); }
+        .arrow3 { top: 280px; left: 470px; transform: rotate(60deg); }
+        .arrow4 { top: 280px; left: 620px; transform: rotate(-60deg); }
+        .arrow5 { top: 180px; left: 770px; transform: rotate(-40deg); }
+        .arrow6 { top: 90px; left: 920px; transform: rotate(-20deg); }
+        
+        /* Phase detail boxes */
+        .phase-detail {
+            background: #f8f9fa;
+            border-left: 5px solid #3498db;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        
+        .phase-detail h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .math-notation {
+            background: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #495057;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .bullet-point {
+            margin: 15px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .bullet-point::before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .legend {
+            background: #ecf0f1;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .legend-item {
+            display: inline-block;
+            margin: 8px 15px;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+        }
+        
+        .navigation {
+            text-align: center;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .nav-button:hover {
+            background: #2980b9;
+        }
+
+        .nav-button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .slide-counter {
+            margin: 0 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+        
+        .current-slide {
+            display: block;
+        }
+        
+        .hidden-slide {
+            display: none;
+        }
+
+        /* Part間ナビゲーションボタン */
+        .part-navigation {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+
+        .part-nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #4a5568;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            margin: 0 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .part-nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .part-nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .part-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .part-btn {
+                font-size: 0.8rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .main-title {
+                font-size: 2.5em;
+            }
+
+            .slide {
+                padding: 20px;
+            }
+
+            .u-diagram {
+                height: 350px;
+                padding: 15px;
+            }
+
+            .phase-box {
+                min-width: 100px;
+                font-size: 0.9em;
+                padding: 8px;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .status-indicator {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 10px auto;
+                width: fit-content;
+            }
+        }
+        
+        @media print {
+            .slide {
+                page-break-after: always;
+                margin-bottom: 0;
+            }
+            .navigation, .main-nav, .status-indicator, .part-navigation {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- メインナビゲーション -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="logo">U理論×免疫マップ統合理論</div>
+            <div class="part-nav">
+                <a href="index.html" class="part-btn active">part1:理論基盤</a>
+                <a href="part2.html" class="part-btn">part2:ソーシャルフィールド</a>
+                <a href="part3.html" class="part-btn">part3:免疫システムとしての内的葛藤構造</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ステータスインジケーター -->
+    <div class="status-indicator">
+        <div id="current-location">part1:理論基盤 - スライド 1</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+    </div>
+
+    <div class="presentation-container">
+        
+        <!-- Slide 1: Title Page -->
+        <div class="slide title-slide current-slide" id="slide-1">
+            <div class="slide-number">1</div>
+            <h1 class="main-title">U理論の圏論的分析</h1>
+            <h2 class="main-subtitle">こころの変容の数学的構造</h2>
+            <div class="author-info">
+                オットー・シャーマーのU理論を<br>
+                圏論の視点から数学的に解析
+            </div>
+            <div class="author-name" style="font-size: 1.5em; margin-top: 40px; opacity: 0.9; font-weight: 500;">
+                片山　立
+            </div>
+        </div>
+
+        <!-- Slide 2: Introduction -->
+        <div class="slide hidden-slide" id="slide-2">
+            <div class="slide-number">2</div>
+            <div class="slide-header">
+                <h1 class="slide-title">研究の背景と目的</h1>
+                <h2 class="slide-subtitle">なぜU理論を圏論で分析するのか</h2>
+            </div>
+            <div class="slide-content">
+                <div class="bullet-point">
+                    <strong>U理論とは：</strong>オットー・シャーマーが提唱した個人・組織の深層的変容プロセスを記述する理論
+                </div>
+                <div class="bullet-point">
+                    <strong>圏論の視点：</strong>対象（状態）と射（変化）、特別な構造（極限・コリミット）として数学的に表現
+                </div>
+                <div class="bullet-point">
+                    <strong>研究の意義：</strong>直感的な変容プロセスを厳密な数学的構造として理解することで、より深い洞察を得る
+                </div>
+                <div class="bullet-point">
+                    <strong>期待される成果：</strong>変容プロセスの<span class="highlight">普遍的性質</span>と<span class="highlight">構造的特徴</span>の解明
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: U-Process Overview -->
+        <div class="slide hidden-slide" id="slide-3">
+            <div class="slide-number">3</div>
+            <div class="slide-header">
+                <h1 class="slide-title">Uプロセスの全体構造</h1>
+                <h2 class="slide-subtitle">7つの段階と圏論的対応</h2>
+            </div>
+            <div class="slide-content">
+                <div class="u-diagram">
+                    <!-- Arrows -->
+                    <div class="arrow arrow1">→</div>
+                    <div class="arrow arrow2">↘</div>
+                    <div class="arrow arrow3">↓</div>
+                    <div class="arrow arrow4">↙</div>
+                    <div class="arrow arrow5">↗</div>
+                    <div class="arrow arrow6">→</div>
+                    
+                    <!-- Phases -->
+                    <div class="phase-box downloading">
+                        <div class="phase-title">Downloading</div>
+                        <div class="phase-desc">既存パターン</div>
+                        <div class="math-desc">恒等射 id_D</div>
+                    </div>
+                    
+                    <div class="phase-box seeing">
+                        <div class="phase-title">Seeing</div>
+                        <div class="phase-desc">観察</div>
+                        <div class="math-desc">射 f₁</div>
+                    </div>
+                    
+                    <div class="phase-box sensing">
+                        <div class="phase-title">Sensing</div>
+                        <div class="phase-desc">共感・共鳴</div>
+                        <div class="math-desc">射 f₂</div>
+                    </div>
+                    
+                    <div class="phase-box presencing">
+                        <div class="phase-title">Presencing</div>
+                        <div class="phase-desc">源との接続</div>
+                        <div class="math-desc">極限 (Limit)</div>
+                    </div>
+                    
+                    <div class="phase-box crystallizing">
+                        <div class="phase-title">Crystallizing</div>
+                        <div class="phase-desc">意図明確化</div>
+                        <div class="math-desc">射 g₁</div>
+                    </div>
+                    
+                    <div class="phase-box prototyping">
+                        <div class="phase-title">Prototyping</div>
+                        <div class="phase-desc">試行実践</div>
+                        <div class="math-desc">射 g₂</div>
+                    </div>
+                    
+                    <div class="phase-box performing">
+                        <div class="phase-title">Performing</div>
+                        <div class="phase-desc">社会実装</div>
+                        <div class="math-desc">コリミット</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Descending Phase -->
+        <div class="slide hidden-slide" id="slide-4">
+            <div class="slide-number">4</div>
+            <div class="slide-header">
+                <h1 class="slide-title">下降フェーズ</h1>
+                <h2 class="slide-subtitle">既存パターンから深層意識への降下</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div>
+                        <div class="phase-detail">
+                            <h3>🔴 Downloading</h3>
+                            <div class="math-notation">id_D : D → D</div>
+                            <p><strong>心理状態：</strong>既存の判断枠組みや習慣的思考パターンに依存</p>
+                            <p><strong>数学的意味：</strong>変化を起こさない恒等射</p>
+                        </div>
+                        
+                        <div class="phase-detail">
+                            <h3>🟠 Seeing</h3>
+                            <div class="math-notation">f₁ : D → S</div>
+                            <p><strong>心理状態：</strong>思い込みから脱却し、現実を新しい視点で観察</p>
+                            <p><strong>数学的意味：</strong>恒等射から意味のある変換への移行</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="phase-detail">
+                            <h3>🟡 Sensing</h3>
+                            <div class="math-notation">f₂ : S → SE</div>
+                            <p><strong>心理状態：</strong>自己と他者、システム全体との相互関係を感知</p>
+                            <p><strong>数学的意味：</strong>局所的構造から広域的構造への拡張射</p>
+                        </div>
+                        
+                        <div class="math-notation" style="margin-top: 30px;">
+                            合成射：f₂ ∘ f₁ ∘ id_D<br>
+                            ↓<br>
+                            極限への収束
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Presencing -->
+        <div class="slide hidden-slide" id="slide-5">
+            <div class="slide-number">5</div>
+            <div class="slide-header">
+                <h1 class="slide-title">Presencing - 変容の核心</h1>
+                <h2 class="slide-subtitle">極限としての源との接続</h2>
+            </div>
+            <div class="slide-content">
+                <div class="phase-detail" style="background: #e8f5e8; border-left-color: #27ae60;">
+                    <h3>🟢 Presencing（プレゼンシング）</h3>
+                    <div class="math-notation">lim(下降フェーズ) = 極限対象</div>
+                    
+                    <div class="bullet-point">
+                        <strong>心理的状態：</strong>内なる源や未来からの可能性と深く接続する状態
+                    </div>
+                    
+                    <div class="bullet-point">
+                        <strong>圏論的解釈：</strong>下降フェーズ（Downloading → Seeing → Sensing）の<span class="highlight">極限</span>として定義される特別な対象
+                    </div>
+                    
+                    <div class="bullet-point">
+                        <strong>普遍性：</strong>全ての下降過程が収束する点。複数の射の「最も一般的な統合点」
+                    </div>
+                    
+                    <div class="bullet-point">
+                        <strong>数学的特徴：</strong>任意の下降的射に対して一意的な射を持つ普遍的対象
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px; font-size: 1.3em; color: #27ae60; font-weight: bold;">
+                    「すべての気づきが源に通じる」という直観の数学的表現
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Ascending Phase -->
+        <div class="slide hidden-slide" id="slide-6">
+            <div class="slide-number">6</div>
+            <div class="slide-header">
+                <h1 class="slide-title">上昇フェーズ</h1>
+                <h2 class="slide-subtitle">洞察から社会実装への展開</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div>
+                        <div class="phase-detail">
+                            <h3>🔵 Crystallizing</h3>
+                            <div class="math-notation">g₁ : P → C</div>
+                            <p><strong>心理状態：</strong>新しいビジョンや意図が明確な形として結晶化</p>
+                            <p><strong>数学的意味：</strong>抽象的極限から具体的構造への自然変換</p>
+                        </div>
+                        
+                        <div class="phase-detail">
+                            <h3>🟣 Prototyping</h3>
+                            <div class="math-notation">g₂ : C → PR</div>
+                            <p><strong>心理状態：</strong>新しいアイデアを小規模な実践で試行錯誤</p>
+                            <p><strong>数学的意味：</strong>構造を行動に変換する関手的写像</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="phase-detail">
+                            <h3>🟪 Performing</h3>
+                            <div class="math-notation">colim(上昇フェーズ)</div>
+                            <p><strong>心理状態：</strong>新しい実践を社会システムに実装・制度化</p>
+                            <p><strong>数学的意味：</strong>局所的変化を大域的構造に統合するコリミット</p>
+                        </div>
+                        
+                        <div class="math-notation" style="margin-top: 30px;">
+                            極限からの展開<br>
+                            ↓<br>
+                            g₃ ∘ g₂ ∘ g₁ = colim
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Mathematical Structure -->
+        <div class="slide hidden-slide" id="slide-7">
+            <div class="slide-number">7</div>
+            <div class="slide-header">
+                <h1 class="slide-title">数学的構造の詳細分析</h1>
+                <h2 class="slide-subtitle">射の合成と普遍性</h2>
+            </div>
+            <div class="slide-content">
+                <div class="phase-detail">
+                    <h3>1. 射の合成関係</h3>
+                    <div class="math-notation">
+                        下降： id_D → f₁ → f₂ → lim<br>
+                        上昇： lim → g₁ → g₂ → colim<br>
+                        全体： f₂ ∘ f₁ ∘ id_D = lim → colim = g₃ ∘ g₂ ∘ g₁
+                    </div>
+                </div>
+                
+                <div class="phase-detail">
+                    <h3>2. 極限とコリミットの非対称性</h3>
+                    <div class="bullet-point">
+                        <span class="highlight">極限（Presencing）</span>：収束・統合を表し、複数の情報源からの洞察が一点に集約
+                    </div>
+                    <div class="bullet-point">
+                        <span class="highlight">コリミット（Performing）</span>：発散・展開を表し、一つの洞察が社会の様々な領域に影響
+                    </div>
+                </div>
+                
+                <div class="phase-detail">
+                    <h3>3. 普遍性の概念</h3>
+                    <div class="bullet-point">
+                        Presencingは<strong>普遍的対象</strong>として、すべての下降的射に対して一意的な射を持つ
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Conclusion -->
+        <div class="slide hidden-slide" id="slide-8">
+            <div class="slide-number">8</div>
+            <div class="slide-header">
+                <h1 class="slide-title">結論と今後の展望</h1>
+                <h2 class="slide-subtitle">圏論的分析から得られた洞察</h2>
+            </div>
+            <div class="slide-content">
+                <div class="phase-detail" style="background: #e8f5e8;">
+                    <h3>🎯 主要な発見</h3>
+                    <div class="bullet-point">
+                        U理論のプロセスは圏論の<span class="highlight">極限・コリミット構造</span>として厳密に表現可能
+                    </div>
+                    <div class="bullet-point">
+                        Presencingの<span class="highlight">普遍性</span>が数学的に証明された
+                    </div>
+                    <div class="bullet-point">
+                        変容プロセスの<span class="highlight">非対称性</span>（収束→発散）が明確化
+                    </div>
+                </div>
+                
+                <div class="phase-detail" style="background: #f3e6ff;">
+                    <h3>🚀 今後の研究方向</h3>
+                    <div class="bullet-point">
+                        他の変容理論（エニアグラム、発達理論等）との圏論的比較
+                    </div>
+                    <div class="bullet-point">
+                        組織変革における実践的応用の数学的モデル化
+                    </div>
+                    <div class="bullet-point">
+                        機械学習・AI分野への圏論的変容理論の適用
+                    </div>
+                </div>
+                
+                <div class="legend">
+                    <h3>📖 凡例</h3>
+                    <div class="legend-item" style="background: #ffebee;">恒等射 = 変化なし</div>
+                    <div class="legend-item" style="background: #fff3e0;">普通の射 = 段階的変化</div>
+                    <div class="legend-item" style="background: #e8f5e8;">極限 = 収束・統合</div>
+                    <div class="legend-item" style="background: #f3e5f5;">コリミット = 発散・展開</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part間ナビゲーション -->
+        <div class="part-navigation">
+            <h3 style="color: white; margin-bottom: 15px;">他のPartへ移動</h3>
+            <a href="part2.html" class="part-nav-btn">part2:ソーシャルフィールド →</a>
+            <a href="part3.html" class="part-nav-btn">part3:免疫システムとしての内的葛藤構造 →</a>
+        </div>
+
+        <!-- スライドナビゲーション -->
+        <div class="navigation">
+            <button class="nav-button" onclick="previousSlide()" id="prev-btn">◀ 前へ</button>
+            <span class="slide-counter" id="slide-counter">1 / 8</span>
+            <button class="nav-button" onclick="nextSlide()" id="next-btn">次へ ▶</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 8;
+
+        function showSlide(n) {
+            // Hide all slides
+            for (let i = 1; i <= totalSlides; i++) {
+                document.getElementById(`slide-${i}`).classList.remove('current-slide');
+                document.getElementById(`slide-${i}`).classList.add('hidden-slide');
+            }
+            
+            // Show current slide
+            document.getElementById(`slide-${n}`).classList.remove('hidden-slide');
+            document.getElementById(`slide-${n}`).classList.add('current-slide');
+            
+            // Update counter
+            document.getElementById('slide-counter').textContent = `${n} / ${totalSlides}`;
+            
+            // Update navigation buttons
+            updateNavigationButtons();
+            
+            // Update progress indicator
+            updateProgressIndicator();
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            prevBtn.disabled = currentSlide === 1;
+            nextBtn.disabled = currentSlide === totalSlides;
+        }
+
+        function updateProgressIndicator() {
+            const totalSections = 26; // 8 + 8 + 10 slides total
+            const currentPosition = currentSlide; // Part 1
+            const progress = (currentPosition / totalSections) * 100;
+
+            const progressFill = document.getElementById('progress-fill');
+            const currentLocation = document.getElementById('current-location');
+
+            if (progressFill) progressFill.style.width = `${progress}%`;
+            if (currentLocation) currentLocation.textContent = `part1:理論基盤 - スライド ${currentSlide}`;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            showSlide(1);
+        });
+    </script>
+</body>
+</html>

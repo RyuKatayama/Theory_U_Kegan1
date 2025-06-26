@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ソーシャルフィールド: 阻害要因、促進要因の圏論的分析 - U理論×免疫マップ統合理論</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* 新しいナビゲーションヘッダー */
+        .main-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 2000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4a5568;
+        }
+
+        /* Part間ナビゲーション */
+        .part-nav {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .part-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: 2px solid transparent;
+            font-size: 0.9rem;
+        }
+
+        .part-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .part-btn.active {
+            background: #4a5568;
+            border-color: #667eea;
+        }
+
+        /* ステータスインジケーター */
+        .status-indicator {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            font-size: 0.8rem;
+            z-index: 1999;
+        }
+
+        .progress-bar {
+            width: 100px;
+            height: 4px;
+            background: rgba(102, 126, 234, 0.2);
+            border-radius: 2px;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #667eea;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        /* 既存のプレゼンテーションスタイル */
+        .presentation-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .slide {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 800px;
+            display: flex;
+            flex-direction: column;
+            page-break-after: always;
+            width: 100%;
+            aspect-ratio: 297/210; /* A4横 */
+        }
+        
+        .slide-header {
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .slide-title {
+            font-size: 2.0em;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+        
+        .slide-subtitle {
+            font-size: 1.2em;
+            color: #7f8c8d;
+            font-weight: normal;
+        }
+        
+        .slide-content {
+            flex: 1;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        
+        .slide-number {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 1em;
+            font-weight: bold;
+        }
+        
+        /* Title slide specific */
+        .title-slide {
+            text-align: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .main-title {
+            font-size: 2.8em;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            line-height: 1.2;
+        }
+        
+        .main-subtitle {
+            font-size: 1.6em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .author-info {
+            font-size: 1.2em;
+            margin-top: 50px;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+        
+        /* Level diagram */
+        .level-diagram {
+            position: relative;
+            height: 450px;
+            background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 15px 0;
+        }
+        
+        .level-box {
+            position: absolute;
+            left: 8%;
+            right: 8%;
+            height: 90px;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 3px solid;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .level-info {
+            flex: 1;
+        }
+        
+        .level-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        
+        .level-desc {
+            font-size: 0.95em;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .level-math {
+            font-size: 0.85em;
+            font-family: 'Courier New', monospace;
+            color: #888;
+            font-style: italic;
+        }
+        
+        .level1 {
+            top: 15px;
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-color: #f44336;
+        }
+        
+        .level2 {
+            top: 120px;
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            border-color: #ff9800;
+        }
+        
+        .level3 {
+            top: 225px;
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+            border-color: #4caf50;
+        }
+        
+        .level4 {
+            top: 330px;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-color: #2196f3;
+        }
+        
+        /* Voice grid */
+        .voice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 25px;
+            margin: 25px 0;
+        }
+        
+        .voice-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 4px solid;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .voice-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .voice-icon {
+            font-size: 2.5em;
+            margin-bottom: 12px;
+        }
+        
+        .voice-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .voice-subtitle {
+            font-size: 1.0em;
+            color: #666;
+            margin-bottom: 12px;
+        }
+        
+        .voice-math {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #495057;
+        }
+        
+        .voj-card {
+            border-color: #ff5722;
+            background: linear-gradient(135deg, #fff3f3, #ffe8e8);
+        }
+        
+        .voc-card {
+            border-color: #ff9800;
+            background: linear-gradient(135deg, #fffaf0, #fff4e6);
+        }
+        
+        .vof-card {
+            border-color: #f44336;
+            background: linear-gradient(135deg, #fff5f5, #ffebee);
+        }
+        
+        .open-mind-card {
+            border-color: #2196f3;
+            background: linear-gradient(135deg, #f0f8ff, #e3f2fd);
+        }
+        
+        .open-heart-card {
+            border-color: #4caf50;
+            background: linear-gradient(135deg, #f1f8e9, #e8f5e8);
+        }
+        
+        .open-will-card {
+            border-color: #9c27b0;
+            background: linear-gradient(135deg, #faf0ff, #f3e5f5);
+        }
+        
+        .bullet-point {
+            margin: 15px 0;
+            padding-left: 25px;
+            position: relative;
+            font-size: 1.1em;
+        }
+        
+        .bullet-point::before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: #3498db;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .math-notation {
+            background: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.0em;
+            margin: 15px 0;
+            color: #495057;
+        }
+        
+        .interaction-box {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+        }
+        
+        .competition-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .competition-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #2c3e50;
+        }
+        
+        .vs-indicator {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 0 8px;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 35px;
+            margin: 25px 0;
+        }
+        
+        .process-flow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+        
+        .process-step {
+            background: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            margin: 4px;
+            font-size: 1.0em;
+            font-weight: bold;
+        }
+        
+        .arrow {
+            font-size: 1.3em;
+            color: #3498db;
+            margin: 0 8px;
+        }
+        
+        .navigation {
+            text-align: center;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .nav-button:hover {
+            background: #2980b9;
+        }
+
+        .nav-button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .slide-counter {
+            margin: 0 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+        
+        .current-slide {
+            display: block;
+        }
+        
+        .hidden-slide {
+            display: none;
+        }
+
+        /* Part間ナビゲーションボタン */
+        .part-navigation {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+
+        .part-nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #4a5568;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            margin: 0 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .part-nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .part-nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .part-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .part-btn {
+                font-size: 0.8rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .main-title {
+                font-size: 2.2em;
+            }
+
+            .slide {
+                padding: 20px;
+            }
+
+            .voice-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .status-indicator {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 10px auto;
+                width: fit-content;
+            }
+
+            .level-diagram {
+                height: 550px;
+            }
+
+            .level-box {
+                height: 110px;
+                left: 5%;
+                right: 5%;
+            }
+
+            .level-title {
+                font-size: 1.1em;
+            }
+
+            .level-desc, .level-math {
+                font-size: 0.85em;
+            }
+        }
+        
+        @media print {
+            .slide {
+                page-break-after: always;
+                margin-bottom: 0;
+            }
+            .navigation, .main-nav, .status-indicator, .part-navigation {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- メインナビゲーション -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="logo">U理論×免疫マップ統合理論</div>
+            <div class="part-nav">
+                <a href="index.html" class="part-btn">part1:理論基盤</a>
+                <a href="part2.html" class="part-btn active">part2:ソーシャルフィールド</a>
+                <a href="part3.html" class="part-btn">part3:免疫システムとしての内的葛藤構造</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ステータスインジケーター -->
+    <div class="status-indicator">
+        <div id="current-location">part2:ソーシャルフィールド - スライド 1</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+    </div>
+
+    <div class="presentation-container">
+        
+        <!-- Slide 1: Title Page -->
+        <div class="slide title-slide current-slide" id="slide-1">
+            <div class="slide-number">1</div>
+            <h1 class="main-title">U理論のソーシャルフィールド、阻害要因、促進要因の圏論的分析</h1>
+            <h2 class="main-subtitle">Uプロセスによる変容</h2>
+            <div class="author-info">
+                意識の構造状態・阻害・促進メカニズムの<br>
+                数学的構造解析
+            </div>
+        </div>
+
+        <!-- Slide 2: Overview -->
+        <div class="slide hidden-slide" id="slide-2">
+            <div class="slide-number">2</div>
+            <div class="slide-header">
+                <h1 class="slide-title">ソーシャルフィールド、阻害要因、促進要因の役割と位置づけ</h1>
+                <h2 class="slide-subtitle">Uプロセスの実行環境を規定する構造</h2>
+            </div>
+            <div class="slide-content">
+                <div class="bullet-point">
+                    <strong>ソーシャルフィールド：</strong>意識の構造状態を圏の<span class="highlight">構造的モード</span>として表現
+                </div>
+                <div class="bullet-point">
+                    <strong>阻害要因（VOJ/VOC/VOF）：</strong>変容プロセスを<span class="highlight">制約・抑制</span>する圏論的構造
+                </div>
+                <div class="bullet-point">
+                    <strong>促進要因（Open Mind/Heart/Will）：</strong>変容プロセスを<span class="highlight">支援・拡張</span>する圏論的力学
+                </div>
+                
+                <div class="process-flow">
+                    <div class="process-step">ソーシャルフィールド</div>
+                    <div class="arrow">→</div>
+                    <div class="process-step">Uプロセスによる変容</div>
+                    <div class="arrow">←</div>
+                    <div class="process-step">阻害・促進要因</div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 35px; font-size: 1.3em; color: #2c3e50; font-weight: bold;">
+                    ソーシャルフィールド、阻害要因、促進要因は<br><span class="highlight">Uプロセスによる変容過程</span>を決定する
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Social Field Levels -->
+        <div class="slide hidden-slide" id="slide-3">
+            <div class="slide-number">3</div>
+            <div class="slide-header">
+                <h1 class="slide-title">ソーシャルフィールド4レベル</h1>
+                <h2 class="slide-subtitle">意識構造の圏論的階層</h2>
+            </div>
+            <div class="slide-content">
+                <div class="level-diagram">
+                    <div class="level-box level1">
+                        <div class="level-info">
+                            <div class="level-title">Level 1: 過去の枠組み</div>
+                            <div class="level-desc">既存パターンに固着、変化への抵抗</div>
+                            <div class="level-math">恒等射のみの自己再生圏 C₁ = ({A}, {id_A})</div>
+                        </div>
+                    </div>
+                    
+                    <div class="level-box level2">
+                        <div class="level-info">
+                            <div class="level-title">Level 2: 枠組みの外へ</div>
+                            <div class="level-desc">新しい情報への開放、初期的変化</div>
+                            <div class="level-math">初期的開放圏 C₂ = ({A,B}, {id_A, id_B, f: A→B})</div>
+                        </div>
+                    </div>
+                    
+                    <div class="level-box level3">
+                        <div class="level-info">
+                            <div class="level-title">Level 3: 自他の理解</div>
+                            <div class="level-desc">相互関係の把握、共感的理解</div>
+                            <div class="level-math">自己/他者共構造圏 C₃ = (Self ∪ Other, Mor ∪ RelMor)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="level-box level4">
+                        <div class="level-info">
+                            <div class="level-title">Level 4: 共振共鳴</div>
+                            <div class="level-desc">一体感、普遍的統合</div>
+                            <div class="level-math">終対象・普遍圏 C₄ = Universal Category with Terminal Object</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Inhibiting Voices -->
+        <div class="slide hidden-slide" id="slide-4">
+            <div class="slide-number">4</div>
+            <div class="slide-header">
+                <h1 class="slide-title">阻害要因（VOJ/VOC/VOF）</h1>
+                <h2 class="slide-subtitle">変容を制約する内的な声</h2>
+            </div>
+            <div class="slide-content">
+                <div class="voice-grid">
+                    <div class="voice-card voj-card">
+                        <div class="voice-icon">📝</div>
+                        <div class="voice-title">VOJ</div>
+                        <div class="voice-subtitle">Voice of Judgment<br>評価の声</div>
+                        <div class="voice-math">∀f ∈ Mor(A,B)<br>VOJ(f) = id_A</div>
+                    </div>
+                    
+                    <div class="voice-card voc-card">
+                        <div class="voice-icon">😏</div>
+                        <div class="voice-title">VOC</div>
+                        <div class="voice-subtitle">Voice of Cynicism<br>皮肉の声</div>
+                        <div class="voice-math">∀f ∈ Mor(A,B)<br>VOC(f) = ∅</div>
+                    </div>
+                    
+                    <div class="voice-card vof-card">
+                        <div class="voice-icon">😨</div>
+                        <div class="voice-title">VOF</div>
+                        <div class="voice-subtitle">Voice of Fear<br>恐れの声</div>
+                        <div class="voice-math">F: C → D<br>VOF(F) = Id_C</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 35px;">
+                    <div class="bullet-point">
+                        <strong>VOJ：</strong>新しい体験を既存枠組みで判断→<span class="highlight">射の恒等化</span>
+                    </div>
+                    <div class="bullet-point">
+                        <strong>VOC：</strong>可能性や動機を冷笑的に否定→<span class="highlight">射の無効化</span>
+                    </div>
+                    <div class="bullet-point">
+                        <strong>VOF：</strong>変化への恐れから現状維持→<span class="highlight">変換の拒否</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Facilitating Openness -->
+        <div class="slide hidden-slide" id="slide-5">
+            <div class="slide-number">5</div>
+            <div class="slide-header">
+                <h1 class="slide-title">促進要因（Open Mind/Heart/Will）</h1>
+                <h2 class="slide-subtitle">変容を支援する開放性</h2>
+            </div>
+            <div class="slide-content">
+                <div class="voice-grid">
+                    <div class="voice-card open-mind-card">
+                        <div class="voice-icon">🧠</div>
+                        <div class="voice-title">Open Mind</div>
+                        <div class="voice-subtitle">認識の開放</div>
+                        <div class="voice-math">新関手 F: C → D<br>の許容・生成</div>
+                    </div>
+                    
+                    <div class="voice-card open-heart-card">
+                        <div class="voice-icon">💖</div>
+                        <div class="voice-title">Open Heart</div>
+                        <div class="voice-subtitle">共感と受容</div>
+                        <div class="voice-math">自然変換 η: F ⟹ G<br>による橋渡し</div>
+                    </div>
+                    
+                    <div class="voice-card open-will-card">
+                        <div class="voice-icon">🎯</div>
+                        <div class="voice-title">Open Will</div>
+                        <div class="voice-subtitle">未来との共鳴</div>
+                        <div class="voice-math">準関手 F: C → Future(C)<br>の作用</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 35px;">
+                    <div class="bullet-point">
+                        <strong>Open Mind：</strong>新しい視点を受け入れる→<span class="highlight">関手の許容</span>
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Open Heart：</strong>他者への共感で関係性構築→<span class="highlight">自然変換</span>
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Open Will：</strong>未来の可能性と共鳴→<span class="highlight">創発的意志</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Interaction Dynamics -->
+        <div class="slide hidden-slide" id="slide-6">
+            <div class="slide-number">6</div>
+            <div class="slide-header">
+                <h1 class="slide-title">相互作用のダイナミクス</h1>
+                <h2 class="slide-subtitle">阻害と促進の構造的競合</h2>
+            </div>
+            <div class="slide-content">
+                <div class="interaction-box">
+                    <h3 style="font-size: 1.4em; margin-bottom: 18px; color: #2c3e50;">各段階での競合メカニズム</h3>
+                    
+                    <div class="competition-section">
+                        <div class="competition-title">🎯 Seeing段階での競合</div>
+                        <p style="font-size: 1.05em;">
+                            <strong>VOJ</strong> <span class="vs-indicator">vs</span> <strong>Open Mind</strong>
+                            : 判断的思考 vs 開放的認識
+                        </p>
+                        <div class="math-notation">
+                            射 f₁: D → S に対して<br>
+                            VOJ(f₁) = id vs Open_Mind(f₁) = expanded_f₁
+                        </div>
+                    </div>
+                    
+                    <div class="competition-section">
+                        <div class="competition-title">💖 Sensing段階での競合</div>
+                        <p style="font-size: 1.05em;">
+                            <strong>VOC</strong> <span class="vs-indicator">vs</span> <strong>Open Heart</strong>
+                            : 皮肉的否定 vs 共感的受容
+                        </p>
+                        <div class="math-notation">
+                            関係射に対して<br>
+                            VOC(関係) = ∅ vs Open_Heart(関係) = 自然変換
+                        </div>
+                    </div>
+                    
+                    <div class="competition-section">
+                        <div class="competition-title">🎯 Presencing段階での競合</div>
+                        <p style="font-size: 1.05em;">
+                            <strong>VOF</strong> <span class="vs-indicator">vs</span> <strong>Open Will</strong>
+                            : 変化への恐れ vs 未来への意志
+                        </p>
+                        <div class="math-notation">
+                            変容に対して<br>
+                            VOF(変容) = 拒否 vs Open_Will(変容) = 未来射の創出
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Mathematical Structure -->
+        <div class="slide hidden-slide" id="slide-7">
+            <div class="slide-number">7</div>
+            <div class="slide-header">
+                <h1 class="slide-title">数学的構造の詳細</h1>
+                <h2 class="slide-subtitle">圏論的メカニズムの厳密な表現</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div>
+                        <h3 style="color: #e74c3c; margin-bottom: 18px;">🚫 阻害要因の作用</h3>
+                        <div class="math-notation">
+                            VOJ: ∀f ∈ Mor(A,B)<br>
+                            VOJ(f) = id_A<br>
+                            (射の恒等化)<br><br>
+                            
+                            VOC: ∀f ∈ Mor(A,B)<br>
+                            VOC(f) = ∅<br>
+                            (射の無効化)<br><br>
+                            
+                            VOF: F: C → D<br>
+                            VOF(F) = Id_C<br>
+                            (関手の恒等化)
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 style="color: #27ae60; margin-bottom: 18px;">✨ 促進要因の作用</h3>
+                        <div class="math-notation">
+                            Open Mind:<br>
+                            新関手 F: C → D の生成<br><br>
+                            
+                            Open Heart:<br>
+                            自然変換 η: F ⟹ G の仲介<br><br>
+                            
+                            Open Will:<br>
+                            準関手 F: C → Future(C)<br>
+                            の創発的作用
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 25px; text-align: center;">
+                    <h3 style="color: #3498db; margin-bottom: 12px;">統合的理解</h3>
+                    <p style="font-size: 1.2em; font-weight: bold;">
+                        阻害要因は<span style="color: #e74c3c;">構造を制限</span>し、
+                        促進要因は<span style="color: #27ae60;">構造を拡張</span>する
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Conclusion -->
+        <div class="slide hidden-slide" id="slide-8">
+            <div class="slide-number">8</div>
+            <div class="slide-header">
+                <h1 class="slide-title">結論と実践的示唆</h1>
+                <h2 class="slide-subtitle">ソーシャルフィールド、阻害要因、促進要因分析から得られた洞察</h2>
+            </div>
+            <div class="slide-content">
+                <div style="background: #e8f5e8; padding: 22px; border-radius: 15px; margin: 18px 0;">
+                    <h3 style="color: #2c3e50; margin-bottom: 18px;">🎯 主要な発見</h3>
+                    <div class="bullet-point">
+                        ソーシャルフィールドは意識の<span class="highlight">構造的モード</span>として数学的に表現可能
+                    </div>
+                    <div class="bullet-point">
+                        阻害・促進要因は<span class="highlight">競合する圏論的作用</span>として理解できる
+                    </div>
+                    <div class="bullet-point">
+                        変容の成功は<span class="highlight">促進要因の優勢</span>によって決まる
+                    </div>
+                </div>
+                
+                <div style="background: #f3e6ff; padding: 22px; border-radius: 15px; margin: 18px 0;">
+                    <h3 style="color: #2c3e50; margin-bottom: 18px;">🚀 実践的示唆</h3>
+                    <div class="bullet-point">
+                        VOJ/VOC/VOFの<span class="highlight">早期検出</span>と対策の重要性
+                    </div>
+                    <div class="bullet-point">
+                        Open Mind/Heart/Willの<span class="highlight">意図的な活性化</span>手法の開発
+                    </div>
+                    <div class="bullet-point">
+                        ソーシャルフィールドの<span class="highlight">レベル診断</span>と段階的向上
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 35px; font-size: 1.3em; color: #2c3e50; font-weight: bold;">
+                    ソーシャルフィールド、阻害要因、促進要因の理解により<br><span class="highlight">変容プロセスの質的向上</span>が可能
+                </div>
+            </div>
+        </div>
+
+        <!-- Part間ナビゲーション -->
+        <div class="part-navigation">
+            <h3 style="color: white; margin-bottom: 15px;">他のPartへ移動</h3>
+            <a href="index.html" class="part-nav-btn">← part1:理論基盤</a>
+            <a href="part3.html" class="part-nav-btn">part3:免疫システムとしての内的葛藤構造 →</a>
+        </div>
+
+        <!-- スライドナビゲーション -->
+        <div class="navigation">
+            <button class="nav-button" onclick="previousSlide()" id="prev-btn">◀ 前へ</button>
+            <span class="slide-counter" id="slide-counter">1 / 8</span>
+            <button class="nav-button" onclick="nextSlide()" id="next-btn">次へ ▶</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 8;
+
+        function showSlide(n) {
+            // Hide all slides
+            for (let i = 1; i <= totalSlides; i++) {
+                document.getElementById(`slide-${i}`).classList.remove('current-slide');
+                document.getElementById(`slide-${i}`).classList.add('hidden-slide');
+            }
+            
+            // Show current slide
+            document.getElementById(`slide-${n}`).classList.remove('hidden-slide');
+            document.getElementById(`slide-${n}`).classList.add('current-slide');
+            
+            // Update counter
+            document.getElementById('slide-counter').textContent = `${n} / ${totalSlides}`;
+            
+            // Update navigation buttons
+            updateNavigationButtons();
+            
+            // Update progress indicator
+            updateProgressIndicator();
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            prevBtn.disabled = currentSlide === 1;
+            nextBtn.disabled = currentSlide === totalSlides;
+        }
+
+        function updateProgressIndicator() {
+            const totalSections = 24; // 3 Parts × 8 average slides
+            const currentPosition = 8 + currentSlide; // Part 2 starts at position 9
+            const progress = (currentPosition / totalSections) * 100;
+
+            const progressFill = document.getElementById('progress-fill');
+            const currentLocation = document.getElementById('current-location');
+
+            if (progressFill) progressFill.style.width = `${progress}%`;
+            if (currentLocation) currentLocation.textContent = `part2:ソーシャルフィールド - スライド ${currentSlide}`;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            showSlide(1);
+        });
+    </script>
+</body>
+</html>
